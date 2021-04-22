@@ -1,0 +1,33 @@
+{
+    "name": "natoursusers",
+    "version": "1.0.0",
+    "description": "An API project for listening users",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon server.js",
+        "start:prod": "NODE_ENV=production nodemon server.js",
+        "debug": "ndb server.js"
+    },
+    "keywords": [
+        "api"
+    ],
+    "author": "Taofeeq Adewuyi",
+    "license": "ISC",
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "express-mongo-sanitize": "^2.0.2",
+        "express-rate-limit": "^5.2.6",
+        "helmet": "^4.4.1",
+        "hpp": "^0.2.3",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.11.19",
+        "morgan": "^1.10.0",
+        "ndb": "^1.1.5",
+        "nodemailer": "^6.5.0",
+        "update": "^0.7.4",
+        "validator": "^13.5.2",
+        "xss-clean": "^0.1.1"
+    }
+}
