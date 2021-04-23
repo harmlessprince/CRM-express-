@@ -50,7 +50,10 @@ const schema = new mongoose.Schema({
         enum: ['admin', 'employee', 'company'],
         default: 'employee'
     },
-    phone: { type: String }
+    phone: { type: String },
+    password_updated_at: Date,
+    password_reset_token: String,
+    password_reset_token_expires_at: Date,
 
 });
 schema.plugin(timestamp);
@@ -68,7 +71,7 @@ schema.pre(/^find/, function(next) {
 schema.pre('save', async function(next) {
     //If password is not modified next middleware
     if (!this.isModified('password')) return next();
-    //else 
+    //else hash password
     this.password = await bcrypt.hash(this.password, 12);
     this.confirm_password = undefined;
     next();
@@ -82,6 +85,13 @@ schema.pre('save', async function(next) {
 //check if supplied password is same as the password in the database
 schema.methods.correctPassword = async(passwordSupplied, employeePassword) => {
     return await bcrypt.compare(passwordSupplied, employeePassword);
+}
+schema.methods.hasPasswordBeenUpdated = function(jwtTimeStamp) {
+    if (this.password_updated_at) {
+        const passwordUpdatedAt = parse(this.password_updated_at.getTime() / 1000, 10);
+        return jwtTimeStamp < passwordUpdatedAt;
+    }
+    return false;
 }
 
 const Employee = mongoose.model("Employee", schema);
