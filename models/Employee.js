@@ -14,7 +14,10 @@ const schema = new mongoose.Schema({
     company: {
         type: mongoose.Schema.ObjectId,
         ref: 'Company',
-        required: [true, 'Company ID is required']
+        required: [function() { return this.role === 'employee'; },
+            'A user of type employee must belong to a company'
+        ],
+
     },
     email: {
         type: String,
