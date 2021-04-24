@@ -16,6 +16,6 @@ router
 router
     .route("/:employeeId")
     .get(auth.auth, hasRole.HasRole("employee"), EmployeeController.show)
-    .patch(auth.auth, hasRole.HasRole("employee"), EmployeeController.update)
+    .patch(auth.auth, EmployeeController.update)
     .delete(auth.auth, hasRole.HasRole("admin", "company"), EmployeeController.delete);
 module.exports = router;

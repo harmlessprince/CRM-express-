@@ -3,7 +3,7 @@ const Employee = require('../models/Employee');
 const CatchAsync = require('./../utils/CatchAsync');
 const filterFields = require('./../utils/FilterFields');
 const NotFoundError = function(req, res, next) {
-    return next(new AppError(`Employee with id: ${req.params.employeeId} not found`, 404));
+    return next(new AppError(`User or Employee with id: ${req.params.employeeId} not found`, 404));
 };
 exports.index = CatchAsync(async(req, res, next) => {
     const employees = await Employee.find();
@@ -48,6 +48,9 @@ exports.update = CatchAsync(async(req, res, next) => {
     }
     //Filter out request parameters
     const filteredBody = filterFields(req.body, "first_name", "last_name", 'phone', 'updated_at');
+    if (req.user.role === 'admin') {
+        return next(new AppError('This user can not be deleted or updated, he is the super admin'));
+    }
     //update employee details
     const employee = await Employee.findByIdAndUpdate(req.params.employeeId, filteredBody, { new: true, runValidators: true });
     if (!employee) return NotFoundError(req, res, next);
