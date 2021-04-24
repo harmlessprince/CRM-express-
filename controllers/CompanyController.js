@@ -1,10 +1,11 @@
 const AppError = require('./../utils/AppError');
 const Company = require('../models/Company');
 const CatchAsync = require('./../utils/CatchAsync');
-
+const Employee = require('../models/Employee');
 
 exports.index = CatchAsync(async(req, res, next) => {
     const companies = await Company.find();
+
     return res.status(200).json({
         status: true,
         message: 'success',
@@ -27,6 +28,8 @@ exports.store = CatchAsync(async(req, res, next) => {
 
 exports.show = CatchAsync(async(req, res, next) => {
     const company = await Company.findById(req.params.companyId);
+    let companyEmployees = await Employee.find({ "company": company._id }).select('first_name last_name').populate("-company");
+    company.employees = companyEmployees;
     if (!company) {
         return next(new AppError(`No Company found with the ID : ${req.params.companyId}`, 404))
     }

@@ -48,10 +48,8 @@ exports.update = CatchAsync(async(req, res, next) => {
     }
     //Filter out request parameters
     const filteredBody = filterFields(req.body, "first_name", "last_name", 'phone', 'updated_at');
-    if (req.user.role === 'admin') {
-        return next(new AppError('This user can not be deleted or updated, he is the super admin'));
-    }
     //update employee details
+    const userId = req.params.employeeId || req.user.id
     const employee = await Employee.findByIdAndUpdate(req.params.employeeId, filteredBody, { new: true, runValidators: true });
     if (!employee) return NotFoundError(req, res, next);
     res.status(200).json({

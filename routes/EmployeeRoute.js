@@ -5,17 +5,11 @@ const auth = require("./../middlewares/Protect");
 const hasRole = require("./../middlewares/HasRole");
 router
     .route("/")
-    .get(auth.auth,
-        hasRole.HasRole("company", "admin"),
-        EmployeeController.index)
-    .post(
-        auth.auth,
-        hasRole.HasRole("company", "admin"),
-        EmployeeController.store
-    );
+    .get(EmployeeController.index)
+    .post(auth.auth, hasRole.HasRole("admin"), EmployeeController.store);
 router
     .route("/:employeeId")
-    .get(auth.auth, hasRole.HasRole("employee"), EmployeeController.show)
-    .patch(auth.auth, EmployeeController.update)
-    .delete(auth.auth, hasRole.HasRole("admin", "company"), EmployeeController.delete);
+    .get(EmployeeController.show)
+    .patch(auth.auth, hasRole.HasRole("admin"), EmployeeController.update)
+    .delete(auth.auth, hasRole.HasRole("admin"), EmployeeController.delete);
 module.exports = router;

@@ -14,7 +14,7 @@ const schema = new mongoose.Schema({
         validate: [validator.isEmail, "Invalid email address"],
     },
     logo: { type: String },
-    website: { type: String }
+    website: { type: String },
 });
 schema.plugin(timestamp);
 const Company = mongoose.model("Company", schema);
