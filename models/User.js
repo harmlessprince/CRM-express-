@@ -14,8 +14,8 @@ const schema = new mongoose.Schema({
     company: {
         type: mongoose.Schema.ObjectId,
         ref: 'Company',
-        required: [function() { return this.role === 'employee'; },
-            'A user of type employee must belong to a company'
+        required: [function() { return this.role === 'user'; },
+            'A user of type user must belong to a company'
         ],
 
     },
@@ -50,8 +50,8 @@ const schema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'employee', 'company'],
-        default: 'employee'
+        enum: ['admin', 'user', 'company'],
+        default: 'user'
     },
     phone: { type: String },
     password_updated_at: Date,
@@ -61,7 +61,7 @@ const schema = new mongoose.Schema({
 });
 schema.plugin(timestamp);
 
-//populate  employee data with their company
+//populate  user data with their company
 schema.pre(/^find/, function(next) {
     this.populate({
         path: 'company',
@@ -70,7 +70,7 @@ schema.pre(/^find/, function(next) {
     next();
 });
 
-//hash employee password
+//hash user password
 schema.pre('save', async function(next) {
     //If password is not modified next middleware
     if (!this.isModified('password')) return next();
@@ -80,14 +80,14 @@ schema.pre('save', async function(next) {
     next();
 });
 
-// //populate  employee data with their company
+// //populate  user data with their company
 // schema.post(/^findByIdAndUpdate/, function(next) {
 //     this.updated_at = new Date();
 //     next();
 // });
 //check if supplied password is same as the password in the database
-schema.methods.correctPassword = async(passwordSupplied, employeePassword) => {
-    return await bcrypt.compare(passwordSupplied, employeePassword);
+schema.methods.correctPassword = async(passwordSupplied, userPassword) => {
+    return await bcrypt.compare(passwordSupplied, userPassword);
 }
 schema.methods.hasPasswordBeenUpdated = function(jwtTimeStamp) {
     if (this.password_updated_at) {
@@ -97,6 +97,6 @@ schema.methods.hasPasswordBeenUpdated = function(jwtTimeStamp) {
     return false;
 }
 
-const Employee = mongoose.model("Employee", schema);
+const User = mongoose.model("User", schema);
 
-module.exports = Employee;
+module.exports = User;

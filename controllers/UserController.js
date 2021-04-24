@@ -1,42 +1,42 @@
 const AppError = require('../utils/AppError');
-const Employee = require('../models/Employee');
-const CatchAsync = require('./../utils/CatchAsync');
-const filterFields = require('./../utils/FilterFields');
+const User = require('../models/User');
+const CatchAsync = require('../utils/CatchAsync');
+const filterFields = require('../utils/FilterFields');
 const NotFoundError = function(req, res, next) {
-    return next(new AppError(`User or Employee with id: ${req.params.employeeId} not found`, 404));
+    return next(new AppError(`User or User with id: ${req.params.userId} not found`, 404));
 };
 exports.index = CatchAsync(async(req, res, next) => {
-    const employees = await Employee.find();
+    const users = await User.find();
     return res.status(200).json({
         status: true,
         message: 'success',
         data: {
-            employees
+            users
         }
     });
 });
 
 
 exports.store = CatchAsync(async(req, res, next) => {
-    const employee = await Employee.create(req.body);
-    employee.password = undefined;
+    const user = await User.create(req.body);
+    user.password = undefined;
     res.status(201).json({
         status: true,
         message: 'success',
         data: {
-            employee,
+            user,
         }
     });
 });
 
 exports.show = CatchAsync(async(req, res, next) => {
-    const employee = await Employee.findById(req.params.employeeId);
-    if (!employee) return NotFoundError(req, res, next);
+    const user = await User.findById(req.params.userId);
+    if (!user) return NotFoundError(req, res, next);
     res.status(302).json({
         status: true,
         message: 'success',
         data: {
-            employee,
+            user,
         }
     });
 });
@@ -48,19 +48,19 @@ exports.update = CatchAsync(async(req, res, next) => {
     }
     //Filter out request parameters
     const filteredBody = filterFields(req.body, "first_name", "last_name", 'phone', 'updated_at');
-    //update employee details
-    const userId = req.params.employeeId || req.user.id
-    const employee = await Employee.findByIdAndUpdate(req.params.employeeId, filteredBody, { new: true, runValidators: true });
-    if (!employee) return NotFoundError(req, res, next);
+    //update user details
+    const userId = req.params.userId || req.user.id
+    const user = await User.findByIdAndUpdate(req.params.userId, filteredBody, { new: true, runValidators: true });
+    if (!user) return NotFoundError(req, res, next);
     res.status(200).json({
         status: true,
         'messages': 'profile updated successfully',
-        data: { employee }
+        data: { user }
     });
 });
 
 exports.delete = CatchAsync(async(req, res, next) => {
-    const user = await Employee.findById(req.params.employeeId);
+    const user = await User.findById(req.params.userId);
     if (!user) {
         return NotFoundError(req, res, next);
     }
@@ -71,7 +71,7 @@ exports.delete = CatchAsync(async(req, res, next) => {
     user.save({ validateBeforeSave: false });
     res.status(204).json({
         status: true,
-        messages: 'Employee deleted successfully ',
+        messages: 'User deleted successfully ',
         data: null
     });
 });
