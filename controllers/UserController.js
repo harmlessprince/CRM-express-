@@ -2,9 +2,13 @@ const AppError = require('../utils/AppError');
 const User = require('../models/User');
 const CatchAsync = require('../utils/CatchAsync');
 const filterFields = require('../utils/FilterFields');
-const NotFoundError = function(req, res, next) {
-    return next(new AppError(`User or User with id: ${req.params.userId} not found`, 404));
-};
+const rejectPasswordUpdate = require('./../utils/RejectPasswordUpdate')
+const NotFoundError = require('./../utils/NotFound');
+// const NotFoundError = function(req, res, next) {
+//     return next(new AppError(`User or User with id: ${req.params.userId} not found`, 404));
+// };
+
+
 exports.index = CatchAsync(async(req, res, next) => {
     const users = await User.find();
     return res.status(200).json({
@@ -43,9 +47,7 @@ exports.show = CatchAsync(async(req, res, next) => {
 
 exports.update = CatchAsync(async(req, res, next) => {
     //check if req has password parameters
-    if (req.body.password || req.body.confirm_password) {
-        return next(new AppError('You are not allowed to update you password via this route', 403))
-    }
+    rejectPasswordUpdate(req, res, next);
     //Filter out request parameters
     const filteredBody = filterFields(req.body, "first_name", "last_name", 'phone', 'updated_at');
     //update user details
@@ -76,7 +78,10 @@ exports.delete = CatchAsync(async(req, res, next) => {
     });
 });
 exports.create = CatchAsync((req, res, next) => {
-    res.status(204).json({
-        'all': 'ok'
-    });
+
+    // const permission = grants.can('user').createOwn('video');
+    // console.log(permission.granted); // —> true
+    // // res.status(204).json({
+    // //     'all': 'ok'
+    // // });
 });

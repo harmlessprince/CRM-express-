@@ -86,8 +86,8 @@ schema.pre('save', async function(next) {
 //     next();
 // });
 //check if supplied password is same as the password in the database
-schema.methods.correctPassword = async(passwordSupplied, userPassword) => {
-    return await bcrypt.compare(passwordSupplied, userPassword);
+schema.methods.validatePassword = async(plainPassword, hashedPassword) => {
+    return await bcrypt.compare(plainPassword, hashedPassword);
 }
 schema.methods.hasPasswordBeenUpdated = function(jwtTimeStamp) {
     if (this.password_updated_at) {

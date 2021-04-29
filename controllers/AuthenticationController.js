@@ -3,7 +3,6 @@ const CatchAsync = require("./../utils/CatchAsync");
 const AppError = require("./../utils/AppError");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const { userInfo } = require("os");
 
 //SignToken
 const SignToken = (userId) => {
@@ -42,7 +41,7 @@ exports.login = CatchAsync(async(req, res, next) => {
     //check if email and password exist
     const user = await User.findOne({ email }).select("+password");
     //check if user exist and password is correct
-    if (!user || !(await user.correctPassword(password, user.password))) {
+    if (!user || !(await user.validatePassword(password, user.password))) {
         return next(new AppError("Invalid Email or Password Supplied", 400));
     }
     const token = createToken(user._id);
