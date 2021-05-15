@@ -1,5 +1,6 @@
 const AppError = require("./../utils/AppError");
-
+const CatchAsync = require('./../utils/CatchAsync');
+// console.log(roles.can());
 exports.HasRole = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {

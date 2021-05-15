@@ -9,8 +9,9 @@ const hpp = require('hpp')
 const AppError = require('./utils/AppError');
 const globalErrorHandler = require('./error/GlobalError');
 const CompanyRouter = require("./routes/CompanyRoute");
-const EmployeeRouter = require("./routes/EmployeeRoute");
+const UserRouter = require("./routes/UserRoute");
 const AuthRouter = require("./routes/AuthenticationRoute");
+const ProfileRouter = require('./routes/ProfileRoute');
 const app = express();
 //Set security HTTP headers
 app.use(helmet());
@@ -57,10 +58,13 @@ app.use((req, res, next) => {
 
 //mount auth routes
 app.use('/api/v1', AuthRouter);
-//mount employee routes
-app.use("/api/v1/employees", EmployeeRouter);
+//mount profile  routes
+app.use("/api/v1/profile", ProfileRouter);
+//mount user routes
+app.use("/api/v1/users", UserRouter);
 //mount company routes
 app.use("/api/v1/companies", CompanyRouter);
+
 
 app.all("*", (req, res, next) => {
     // const err = new Error(`Can't find ${req.originalUrl} on the serve`);

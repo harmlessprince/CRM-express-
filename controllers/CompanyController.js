@@ -1,10 +1,11 @@
 const AppError = require('./../utils/AppError');
 const Company = require('../models/Company');
 const CatchAsync = require('./../utils/CatchAsync');
-
+const User = require('../models/User');
 
 exports.index = CatchAsync(async(req, res, next) => {
     const companies = await Company.find();
+
     return res.status(200).json({
         status: true,
         message: 'success',
@@ -30,6 +31,8 @@ exports.show = CatchAsync(async(req, res, next) => {
     if (!company) {
         return next(new AppError(`No Company found with the ID : ${req.params.companyId}`, 404))
     }
+    let companyUsers = await User.find({ "company": company._id }).select('first_name last_name').populate("-company");
+    company.users = companyUsers;
     res.status(200).json({
         status: true,
         message: 'success',

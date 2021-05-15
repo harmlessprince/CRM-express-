@@ -2,7 +2,7 @@ const AppError = require("./../utils/AppError");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const CatchAsync = require("./../utils/CatchAsync");
-const Employee = require("./../models/Employee");
+const User = require("../models/User");
 const verifyToken = async(token, jwtSecret) => {
     return await promisify(jwt.verify)(token, jwtSecret);
 }
@@ -19,7 +19,7 @@ exports.auth = CatchAsync(async(req, res, next) => {
     //2. Verify the token 
     const decodedToken = await verifyToken(token, process.env.JWT_SECRET);
     //3. Check if credentials is on server
-    const AuthUser = await Employee.findById(decodedToken.id);
+    const AuthUser = await User.findById(decodedToken.id);
     if (!AuthUser) {
         return next(new AppError('Credential no longer exist on our server', 401));
     }
