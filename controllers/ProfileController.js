@@ -14,6 +14,7 @@ exports.update = CatchAsync(async(req, res, next) => {
         new: true,
         runValidators: true,
     });
+    if (user.role == 'admin') return next(new AppError('Admin Profile Can not be updated for security reasons', 419));
     return res.status(200).json({
         status: true,
         message: 'Profile updated successfully',
@@ -24,6 +25,7 @@ exports.update = CatchAsync(async(req, res, next) => {
 
 exports.delete = CatchAsync(async(req, res, next) => {
     const user = await User.findByIdAndUpdate(req.user.id, { active: false });
+    if (user.role == 'admin') return next(new AppError('Admin Profile Can not be deleted', 419));
     return res.status(204).json({
         status: true,
         message: 'Profile deleted successfully',

@@ -55,8 +55,6 @@ const schema = new mongoose.Schema({
     },
     phone: { type: String },
     password_updated_at: Date,
-    password_reset_token: String,
-    password_reset_token_expires_at: Date,
 
 });
 schema.plugin(timestamp);
@@ -80,11 +78,14 @@ schema.pre('save', async function(next) {
     next();
 });
 
-// //populate  user data with their company
-// schema.post(/^findByIdAndUpdate/, function(next) {
-//     this.updated_at = new Date();
-//     next();
-// });
+schema.pre('save', async function(next) {
+    //Only run this function if password was modified
+    if (!this.isModified('password') || this.isNew) return next();
+    //hash password
+    this.password_updated_at = Date.now() - 1000;
+    next();
+});
+
 //check if supplied password is same as the password in the database
 schema.methods.validatePassword = async(plainPassword, hashedPassword) => {
     return await bcrypt.compare(plainPassword, hashedPassword);

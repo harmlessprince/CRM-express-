@@ -53,5 +53,5 @@ exports.login = CatchAsync(async(req, res, next) => {
         message: "You have successfully been logged in",
         data: { user },
         token
-    })
+    });
 });

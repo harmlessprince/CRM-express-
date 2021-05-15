@@ -8,7 +8,7 @@ const hasRole = require("../middlewares/HasRole");
 router
     .route("/")
     .get(UserController.index)
-    .post(auth.auth, UserController.store);
+    .post(auth.auth, hasRole.HasRole('admin'), UserController.store);
 router
     .route("/:userId")
     .get(UserController.show)
