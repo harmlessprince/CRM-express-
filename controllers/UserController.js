@@ -1,5 +1,6 @@
 const AppError = require('../utils/AppError');
 const User = require('../models/User');
+const Company = require('../models/Company');
 const CatchAsync = require('../utils/CatchAsync');
 const filterFields = require('../utils/FilterFields');
 const rejectPasswordUpdate = require('./../utils/RejectPasswordUpdate')
@@ -22,6 +23,13 @@ exports.index = CatchAsync(async(req, res, next) => {
 
 
 exports.store = CatchAsync(async(req, res, next) => {
+    //check if company exist
+    if (!(await Company.exists({ _id: req.body.company }))) {
+        return next(new AppError(`Their is no company with the ID: ${req.body.company}`, 404));
+    }
+    if (req.user.role === 'company') {
+        req.body.role = 'employee';
+    }
     const user = await User.create(req.body);
     user.password = undefined;
     res.status(201).json({

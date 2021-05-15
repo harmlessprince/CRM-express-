@@ -14,10 +14,9 @@ const schema = new mongoose.Schema({
     company: {
         type: mongoose.Schema.ObjectId,
         ref: 'Company',
-        required: [function() { return this.role === 'user'; },
-            'A user of type user must belong to a company'
+        required: [function() { return this.role === 'employee'; },
+            'An employee must belong to company'
         ],
-
     },
     email: {
         type: String,
@@ -50,8 +49,8 @@ const schema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'user', 'company'],
-        default: 'user'
+        enum: ['admin', 'employee', 'company'],
+        default: 'employee'
     },
     phone: { type: String },
     password_updated_at: Date,
